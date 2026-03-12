@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import type { ITweet } from "../types/index.js";
+import type { ITweetDoc } from "../interfaces/tweet-doc.interface.js";
 
-const tweetSchema = new Schema<ITweet>(
+const tweetSchema = new Schema<ITweetDoc>(
   {
     _id: { type: String, required: true },
     content: { type: String, required: true },
@@ -12,11 +12,13 @@ const tweetSchema = new Schema<ITweet>(
     toJSON: {
       transform(_doc, ret) {
         ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
+        const result = ret as Record<string, unknown>;
+        delete result._id;
+        delete result.__v;
+        return result;
       },
     },
   }
 );
 
-export const TweetModel = mongoose.model<ITweet>("Tweet", tweetSchema);
+export const TweetModel = mongoose.model<ITweetDoc>("Tweet", tweetSchema);
